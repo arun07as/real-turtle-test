@@ -28,9 +28,17 @@ async function run() {
   await rectangle(100, 180)
   await turtle.fill()
 
-  await turtle.setPosition(385, 100)
+  await turtle.setPosition(400, 100)
   await turtle.setStrokeColorRGB(0, 255, 0)
-  await triangle(215)
+  // await triangle(215)
+  await turtle.beginPath()
+  await turtle.right(150)
+  await turtle.forward(350)
+  await turtle.right(120)
+  await turtle.forward(350)
+  await turtle.right(120)
+  await turtle.forward(350)
+  await turtle.closePath()
   await turtle.setFillStyle("green")
   await turtle.fill()
 }
@@ -63,4 +71,41 @@ async function triangle(length) {
   await turtle.right(120)
   await turtle.forward(length)
   await turtle.closePath()
+}
+
+function parseColor(color) {
+  let rgb = null
+  let hex = null
+  if (Array.isArray(color)) {
+    rgb = color
+    hex = rgbToHex(...color)
+  } else {
+    hex = color
+    rgb = hexToRgb(color)
+  }
+  return {
+    rgb: rgb,
+    hex: hex,
+  }
+}
+
+function hexToRgb(hex) {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+  hex = hex.replace(shorthandRegex, function (_m, r, g, b) {
+    return r + r + g + g + b + b
+  })
+
+  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16),
+      ]
+    : null
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 }
